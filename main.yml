@@ -1,0 +1,20 @@
+---
+# These tasks install http in server target
+
+- hosts: webserver
+  remote_user: root
+  become: yes
+  tasks:
+        - name: Installing httpd in server target
+          yum: name={{ item }} state=present
+          with_items:
+           - httpd
+
+        - name: http service state
+          service: name=httpd state=started enabled=yes
+
+        - name: Add service to firewalld
+          firewalld: service=http state=enabled permanent=yes immediate=yes
+
+        - name: Restart firewalld service
+          service: name=firewalld state=restarted enabled=yes
